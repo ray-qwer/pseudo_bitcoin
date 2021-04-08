@@ -17,9 +17,9 @@ class block:
         # get nonce and hash
         # nonce,hash = pow.Run
         proof_of_block = pow.PoW(self)
-        print(proof_of_block.preprare_data(0))
         nonce,hashHex = proof_of_block.Run()
         self.Nonce, self.Hash = nonce, my_encode(hashHex)
+        # print(proof_of_block.Validate())
 
         
 

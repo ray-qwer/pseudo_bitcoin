@@ -8,7 +8,7 @@ class PoW:
     def __init__(self,block):
         self._block = block
         self._target = 1<<(256-block.Bits)
-    def preprare_data(self, nonce):
+    def prepare_data(self, nonce):
         data_list = [
             self._block.PrevBlockHash,
             self._block.Transactions,
@@ -20,11 +20,14 @@ class PoW:
             data.extend(i)
         # here we just need to create a randnum
         return data
+    def Validate(self):
+        hashNum = int(sha256_hash(self.prepare_data(self._block.Nonce)),16)
+        return self._target > hashNum
     def Run(self):
         nonce = 0
         print('start mining')
         while nonce < maxNonce:
-            data = self.preprare_data(nonce)
+            data = self.prepare_data(nonce)
             hashString =  sha256_hash(data)
             hashNum = int(hashString,16)
             if self._target > hashNum:
