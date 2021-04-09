@@ -1,6 +1,8 @@
 import block
 from db import db
 import pickle
+
+
 class BlockChain:
     def __init__(self):
         # _db = db()
@@ -17,15 +19,41 @@ class BlockChain:
         prevBlock = self._blocks[-1]
         newBlock = block.NewBlock(transactions, prevBlock.Hash, len(self._blocks))
         self._blocks.append(newBlock)
+        self._db.store_block_chain(self)
 
     def reset_blk_chain(self):
         self._blocks = []
         self._blocks.append(block.NewGenesisBlock())
         self._db.store_block_chain(self)
 
+    def get_block(self,height):
+        try:
+            return self._blocks[height]
+        except:
+            return "This block is not exist yet!!"
 
-        
+    def __str__(self):
+        blk_chain_str = "blockchain:\nlength: {length}".format(length = len(self._blocks))
+        return blk_chain_str        
+    
+    def get_length(self):
+        return len(self._blocks)
 
+def cli_addBlock(transaction):
+    blk_chain = BlockChain()
+    blk_chain.add_block(transaction)
+
+
+def cli_printblock(height):
+    blk_chain = BlockChain()
+    print(blk_chain.get_block(height-1))
+
+def cli_print_block_chain():
+    blk_chain = BlockChain()
+    print(blk_chain)
+    for i in range(blk_chain.get_length()):
+        print(blk_chain.get_block(i))
+    
 def NewBlockChain():
     return BlockChain()
 

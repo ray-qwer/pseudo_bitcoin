@@ -6,7 +6,7 @@ maxNonce = sys.maxsize
 class PoW:
     def __init__(self,block):
         self._block = block
-        self._target = 1<<(256-block.Bits)
+        self._target = 1<<(256-self._block.Bits)
     def prepare_data(self, nonce):
         data_list = [
             self._block.PrevBlockHash,
@@ -24,16 +24,16 @@ class PoW:
         return self._target > hashNum
     def Run(self):
         nonce = 0
-        print('start mining')
+        # print('start mining')
         while nonce < maxNonce:
             data = self.prepare_data(nonce)
             hashString =  sha256_hash(data)
             hashNum = int(hashString,16)
-            if self._target > hashNum:
-                break
+            if self._target >= hashNum:
+                return  nonce, hashString
             else:
                 nonce+=1
-        return  nonce, hashString
+        
 
 def sha256_hash(data):
     s = hashlib.sha256()

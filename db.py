@@ -11,7 +11,7 @@ class db:
             f.close()
         except:
             self._blk_chain_data = None
-        print(self._blk_chain_data)
+        # print(self._blk_chain_data)
         # print(self._blk_data['Python']['C++'])
 
     def if_have_blk_chain(self):
