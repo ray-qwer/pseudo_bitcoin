@@ -11,6 +11,7 @@ class BlockChain:
         else:
             self._blocks = []
             self._blocks.append(block.NewGenesisBlock())
+            
     def add_block(self, transactions):
         # transactions : type:string
         prevBlock = self._blocks[-1]
@@ -30,10 +31,10 @@ def NewBlockChain():
 
 if __name__ == "__main__":
     a = BlockChain()
-    print(block.my_decode(a._blocks[1].Transactions))
+    print(block.my_decode(a._blocks[0].Transactions))
     a.add_block("blabla")
     a._db.store_block_chain(a)
-    print(block.my_decode(a._blocks[2].Transactions))
+    print(block.my_decode(a._blocks[1].Transactions))
     a.reset_blk_chain()
     a.add_block("hi")
     print(block.my_decode(a._blocks[1].Transactions))
