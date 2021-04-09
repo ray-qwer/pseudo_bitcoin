@@ -1,13 +1,11 @@
 import datetime
 import pow
-from myfunc import my_decode
-from myfunc import my_encode
-
+from myfunc import *
 
 class block:
     def __init__(self, Transactions, PrevBlockHash, PrevHeight):
         self.Height = PrevHeight+1
-        self.PrevBlockHash = my_encode(PrevBlockHash)
+        self.PrevBlockHash = PrevBlockHash
         self.time = datetime.datetime.strftime(datetime.datetime.now(),'%Y-%m-%d-%H:%M:%S')
         self.Bits = 7 # a static num for now
         self.Nonce = None
@@ -30,7 +28,7 @@ def NewBlock(transaction, PrevBlockHash, PrevHeight):
     return blk
 
 def NewGenesisBlock():
-    return NewBlock("creational block: \nwelcome to the lab","",0)
+    return NewBlock("creational block: \nwelcome to the lab",my_encode(""),0)
 
 if __name__ == "__main__":
     a = NewGenesisBlock()

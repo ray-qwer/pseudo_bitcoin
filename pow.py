@@ -1,7 +1,6 @@
 import hashlib
 import sys
-from myfunc import my_decode
-from myfunc import my_encode
+from myfunc import *
 
 maxNonce = sys.maxsize
 class PoW:
