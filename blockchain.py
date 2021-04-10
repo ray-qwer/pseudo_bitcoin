@@ -1,8 +1,9 @@
 import block
 from db import db
 import pickle
-
-
+import transaction
+from myfunc import *
+from collections import defaultdict
 class BlockChain:
     def __init__(self):
         # _db = db()
@@ -12,18 +13,21 @@ class BlockChain:
             self._blocks = self._db.get_blk_chain()._blocks
         else:
             self._blocks = []
-            self._blocks.append(block.NewGenesisBlock())
+            # self._blocks.append(block.NewGenesisBlock())
             
     def add_block(self, transactions):
         # transactions : type:string
+        # if len(self._blocks) == 0:
+        #     self._blocks.append(block.NewGenesisBlock())
         prevBlock = self._blocks[-1]
         newBlock = block.NewBlock(transactions, prevBlock.Hash, len(self._blocks))
         self._blocks.append(newBlock)
         self._db.store_block_chain(self)
 
+
     def reset_blk_chain(self):
         self._blocks = []
-        self._blocks.append(block.NewGenesisBlock())
+        # self._blocks.append(block.NewGenesisBlock())
         self._db.store_block_chain(self)
 
     def get_block(self,height):
@@ -39,10 +43,68 @@ class BlockChain:
     def get_length(self):
         return len(self._blocks)
 
-def cli_addBlock(transaction):
-    blk_chain = BlockChain()
-    blk_chain.add_block(transaction)
+    def createGenesisblock(self,name):
+        self._blocks = []
+        tx = transaction.NewCoinbaseTransaction(name,"")
+        GenesisBlk = block.NewBlock(tx,my_encode(""),0)
+        self._blocks.append(GenesisBlk)
+        self._db.store_block_chain(self)
+    
+    
+    def FindSpendableOutput(self,name):
+        # search all blocks 
+        balance = dict()
+        unspentTxs = []
+        acc = 0
+        for block in self._blocks:
+            for vout in block.Transactions.Vout:
+                if vout._scriptPubKey == name:
+                    balance[block.Transactions.ID] = [vout.value,block.Transactions]
+            for vin in block.Transactions.Vin:
+                if balance.get(vin.Txid) and vin._scriptSig == name:
+                    balance[vin.Txid][0] -= vin.vout
+        for key,value in balance.items():
+            if value[0] != 0:
+                acc += value[0]
+                unspentTxs.append(value[1])
+        return acc, unspentTxs
 
+    def FindBalance(self,name):
+        balance = dict()
+        acc =0
+        for block in self._blocks:
+            for vout in block.Transactions.Vout:
+                if vout._scriptPubKey == name:
+                    balance[block.Transactions.ID] = [vout.value,block.Transactions]
+            for vin in block.Transactions.Vin:
+                if balance.get(vin.Txid) and vin._scriptSig == name:
+                    balance[vin.Txid][0] -= vin.vout
+        for key,value in balance.items():
+            
+            if value[0] != 0:
+                # print(acc)
+                acc += value[0]
+        return acc
+# def cli_addBlock(transaction):
+#     blk_chain = BlockChain()
+#     blk_chain.add_block(transaction)
+def cli_sending(From, To, amount):
+    blk_chain = BlockChain()
+    tx = transaction.NewUTXOTransaction(From,To,amount,blk_chain)
+    if tx == None:
+        print("Error: not enough funds")
+        return
+    blk_chain.add_block(tx)
+    print ("From: {f}\nTo: {t}\nAmount: {a}".format(f=From,t=To,a=amount))
+
+def cli_check_balance(name):
+    blk_chain = BlockChain()
+    amount = blk_chain.FindBalance(name)
+    print("Name: {n}\nAmount: {a}".format(n = name,a = amount))
+
+def cli_create_bc(name):
+    blk_chain = BlockChain()
+    blk_chain.createGenesisblock(name)
 
 def cli_printblock(height):
     blk_chain = BlockChain()
@@ -57,16 +119,16 @@ def cli_print_block_chain():
 def NewBlockChain():
     return BlockChain()
 
+
 if __name__ == "__main__":
     a = BlockChain()
-    print(block.my_decode(a._blocks[0].Transactions))
-    a.add_block("blabla")
-    a._db.store_block_chain(a)
-    print(block.my_decode(a._blocks[1].Transactions))
-    a.reset_blk_chain()
-    a.add_block("hi")
-    print(block.my_decode(a._blocks[1].Transactions))
-
+    cli_print_block_chain()
+    cli_create_bc('ray')
+    cli_print_block_chain()
+    print(a.FindBalance("ray"))
+    # sending("ray","simon",3)
+    # # print(a.FindBalance('ray'))
+    # cli_print_block_chain()
     # f = open("blockchain.pckl","wb")
     # pickle.dump(a,f)
     # f.close()

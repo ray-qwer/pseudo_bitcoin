@@ -1,8 +1,5 @@
 import sys
-from blockchain import BlockChain
-from blockchain import cli_addBlock
-from blockchain import cli_printblock
-from blockchain import cli_print_block_chain
+from blockchain import *
 
 def strcompare(inputStr,commandStr):
     if len(inputStr) > len(commandStr) or len(inputStr) == 1:
@@ -25,20 +22,38 @@ if __name__ == "__main__":
             cli_print_block_chain()
         elif arg[1].lower() == '-h':
             print("""usage:
-            1. cli.py addblock -transaction { someword }  
-            2. cli.py printchain 
-            3. cli.py printblock -height { height }
+            1. cli.py createblockchain -address { Name }
+            2. cli.py getbalance -address { address }
+            3. cli.py send -from { From } -to { To } -amount { How-much }
+            4. cli.py printchain 
+            5. cli.py printblock -height { height }
                         """)
     elif len(arg) > 3:
-        if arg[1].lower() == "addblock" and strcompare(arg[2],"-transaction"):
-            transactions = ' '.join(arg[3:])
-            print("addblock \"{transactions}\"".format(transactions = transactions))
-            cli_addBlock(transactions)
+        # if arg[1].lower() == "addblock" and strcompare(arg[2],"-transaction"):
+        #     transactions = ' '.join(arg[3:])
+        #     print("addblock \"{transactions}\"".format(transactions = transactions))
+        #     cli_addBlock(transactions)
+        if arg[1].lower() == "createblockchain" and strcompare(arg[2], "-address"):
+            name = ' '.join(arg[3:])
+            cli_create_bc(name)
+        elif arg[1].lower() == "getbalance" and strcompare(arg[2],"-address"):
+            name = ' '.join(arg[3:])
+            cli_check_balance(name)
         elif arg[1].lower() == "printblock" and strcompare(arg[2],"-height"):
             try:
                 height = int(arg[3])
                 cli_printblock(height)
             except:
                 print("\"printblock\" needs a number. Type -h for usage.")
+        elif len(arg) == 8:
+            if arg[1].lower() == "send" and strcompare(arg[2],"-from") and strcompare(arg[4],"-to") and strcompare(arg[6],"-amount"):
+                try:
+                    name1 , name2= arg[3],arg[5]
+                    amount = int(arg[7])
+                    cli_sending(name1,name2,amount)
+                except:
+                    print("\"amount\" needs a number when sending. Type -h for usage.")
+        else:
+            print("Illegal command. Type -h for usage")
     else:
         print("Illegal command. Type -h for usage")

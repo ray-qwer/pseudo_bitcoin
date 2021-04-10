@@ -10,7 +10,7 @@ class PoW:
     def prepare_data(self, nonce):
         data_list = [
             self._block.PrevBlockHash,
-            self._block.Transactions,
+            self._block.Transactions.ID,
             my_encode(self._block.time),
             my_encode(str(nonce))
         ]

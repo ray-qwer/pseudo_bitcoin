@@ -1,6 +1,7 @@
 import datetime
 import pow
 from myfunc import *
+import transaction
 
 class block:
     def __init__(self, Transactions, PrevBlockHash, PrevHeight):
@@ -9,7 +10,7 @@ class block:
         self.time = datetime.datetime.strftime(datetime.datetime.now(),'%Y-%m-%d %H:%M:%S')
         self.Bits = 12 # a static num for now
         self.Nonce = None
-        self.Transactions = my_encode(Transactions)
+        self.Transactions = Transactions
         self.Hash = None
     def setHash(self):
         # get nonce and hash
@@ -21,7 +22,7 @@ class block:
     def __str__(self):
         return ("block:\nheight: {height}\ntime: {time}\nBits: {Bits}\nNonce: {Nonce}\nhash: {hash}\nprevious block hash: {prev_hash}\ntransaction: {transaction}\n"\
             .format(height = self.Height,time = self.time,Bits = self.Bits, Nonce = self.Nonce, 
-            hash = my_decode(self.Hash), transaction = my_decode(self.Transactions), prev_hash = my_decode(self.PrevBlockHash)))
+            hash = my_decode(self.Hash), transaction = self.Transactions, prev_hash = my_decode(self.PrevBlockHash)))
         
 
 def NewBlock(transaction, PrevBlockHash, PrevHeight):
@@ -30,11 +31,12 @@ def NewBlock(transaction, PrevBlockHash, PrevHeight):
     # print("complete mining")
     return blk
 
-def NewGenesisBlock():
-    return NewBlock("creational block: \nwelcome to the lab",my_encode(""),0)
+# def NewGenesisBlock(to,data = ""):
+#     transaction.NewCoinbaseTransaction(to,data)
+#     return NewBlock(data,my_encode(""),0)
 
-if __name__ == "__main__":
-    a = NewGenesisBlock()
-    print(a)
+# if __name__ == "__main__":
+    # a = NewGenesisBlock("ray")
+    # print(a)
 
     
