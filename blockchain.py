@@ -88,44 +88,17 @@ class BlockChain:
 # def cli_addBlock(transaction):
 #     blk_chain = BlockChain()
 #     blk_chain.add_block(transaction)
-def cli_sending(From, To, amount):
-    blk_chain = BlockChain()
-    tx = transaction.NewUTXOTransaction(From,To,amount,blk_chain)
-    if tx == None:
-        print("Error: not enough funds")
-        return
-    blk_chain.add_block(tx)
-    print ("From: {f}\nTo: {t}\nAmount: {a}".format(f=From,t=To,a=amount))
 
-def cli_check_balance(name):
-    blk_chain = BlockChain()
-    amount = blk_chain.FindBalance(name)
-    print("Name: {n}\nAmount: {a}".format(n = name,a = amount))
-
-def cli_create_bc(name):
-    blk_chain = BlockChain()
-    blk_chain.createGenesisblock(name)
-
-def cli_printblock(height):
-    blk_chain = BlockChain()
-    print(blk_chain.get_block(height-1))
-
-def cli_print_block_chain():
-    blk_chain = BlockChain()
-    print(blk_chain)
-    for i in range(blk_chain.get_length()):
-        print(blk_chain.get_block(i))
-    
 def NewBlockChain():
     return BlockChain()
 
 
-if __name__ == "__main__":
-    a = BlockChain()
-    cli_print_block_chain()
-    cli_create_bc('ray')
-    cli_print_block_chain()
-    print(a.FindBalance("ray"))
+# if __name__ == "__main__":
+    # a = BlockChain()
+    # cli_print_block_chain()
+    # cli_create_bc('ray')
+    # cli_print_block_chain()
+    # print(a.FindBalance("ray"))
     # sending("ray","simon",3)
     # # print(a.FindBalance('ray'))
     # cli_print_block_chain()
