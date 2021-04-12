@@ -54,40 +54,69 @@ class BlockChain:
     
     def FindSpendableOutput(self,name,amount):
         # search all blocks 
-        balance = dict()
+        # balance = dict()
+        # unspentTxs = []
+        # acc = 0
+        # for block in self._blocks:
+        #     for vout in block.Transactions.Vout:
+        #         if vout._scriptPubKey == name:
+        #             balance[block.Transactions.ID] = [vout.value,block.Transactions]
+        #     for vin in block.Transactions.Vin:
+        #         if balance.get(vin.Txid) and vin._scriptSig == name:
+        #             balance[vin.Txid][0] -= vin.vout
+        # for key,value in balance.items():
+        #     if value[0] != 0: 
+        #         acc += value[0]
+        #         unspentTxs.append(value[1])
+        #         if acc >= amount:
+        #             break
+        # return acc, unspentTxs
+        gar_block = dict()
         unspentTxs = []
         acc = 0
-        for block in self._blocks:
-            for vout in block.Transactions.Vout:
-                if vout._scriptPubKey == name:
-                    balance[block.Transactions.ID] = [vout.value,block.Transactions]
+        for i in range(len(self._blocks)-1,-1,-1):
+            block = self._blocks[i]
+            if not gar_block.get(block.Transactions.ID):
+                for vout in block.Transactions.Vout:
+                    if vout._scriptPubKey == name:
+                        acc += vout.value
+                        unspentTxs.append(block.Transactions)
+                        if amount < acc:
+                            return acc,unspentTxs
             for vin in block.Transactions.Vin:
-                if balance.get(vin.Txid) and vin._scriptSig == name:
-                    balance[vin.Txid][0] -= vin.vout
-        for key,value in balance.items():
-            if value[0] != 0: 
-                acc += value[0]
-                unspentTxs.append(value[1])
-                if acc >= amount:
-                    break
-        return acc, unspentTxs
+                if not gar_block.get(vin.Txid) and vin._scriptSig == name:
+                    gar_block[vin.Txid] = True
+        return acc,unspentTxs
+
 
     def FindBalance(self,name):
-        balance = dict()
+        gar_block = dict()
         acc =0
-        for block in self._blocks:
-            for vout in block.Transactions.Vout:
-                if vout._scriptPubKey == name:
-                    balance[block.Transactions.ID] = [vout.value,block.Transactions]
+        for i in range(len(self._blocks)-1,-1,-1):
+            block = self._blocks[i]
+            if not gar_block.get(block.Transactions.ID):
+                for vout in block.Transactions.Vout:
+                    if vout._scriptPubKey == name:
+                        acc += vout.value
             for vin in block.Transactions.Vin:
-                if balance.get(vin.Txid) and vin._scriptSig == name:
-                    balance[vin.Txid][0] -= vin.vout
-        for key,value in balance.items():
-            
-            if value[0] != 0:
-                # print(acc)
-                acc += value[0]
+                if not gar_block.get(vin.Txid) and vin._scriptSig == name:
+                    gar_block[vin.Txid] = True
         return acc
+        # balance = dict()
+        # acc = 0
+        # for block in self._blocks:
+        #     for vout in block.Transactions.Vout:
+        #         if vout._scriptPubKey == name:
+        #             balance[block.Transactions.ID] = [vout.value,block.Transactions]
+        #     for vin in block.Transactions.Vin:
+        #         if balance.get(vin.Txid) and vin._scriptSig == name:
+        #             balance[vin.Txid][0] -= vin.vout
+        # for key,value in balance.items():
+            
+        #     if value[0] != 0:
+        #         # print(acc)
+        #         acc += value[0]
+        # return acc
     
     def Verify_Block_Chain(self):
         for i in range(len(self._blocks)):
