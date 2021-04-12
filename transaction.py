@@ -55,7 +55,7 @@ def NewUTXOTransaction(From, To, amount, bc):
     # bc : blockchain
     txin = []
     txout = []
-    acc, validOutput = bc.FindSpendableOutput(From)
+    acc, validOutput = bc.FindSpendableOutput(From,amount)
     if acc < amount:
         
         return None

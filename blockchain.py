@@ -52,7 +52,7 @@ class BlockChain:
         self._db.store_block_chain(self)
     
     
-    def FindSpendableOutput(self,name):
+    def FindSpendableOutput(self,name,amount):
         # search all blocks 
         balance = dict()
         unspentTxs = []
@@ -65,9 +65,11 @@ class BlockChain:
                 if balance.get(vin.Txid) and vin._scriptSig == name:
                     balance[vin.Txid][0] -= vin.vout
         for key,value in balance.items():
-            if value[0] != 0:
+            if value[0] != 0: 
                 acc += value[0]
                 unspentTxs.append(value[1])
+                if acc >= amount:
+                    break
         return acc, unspentTxs
 
     def FindBalance(self,name):
