@@ -13,6 +13,9 @@ def strcompare(inputStr,commandStr):
         return True
 def cli_sending(From, To, amount):
     blk_chain = BlockChain()
+    if not blk_chain.Verify_Block_Chain():
+        print("Your database may be damaged. Cannot open this database.")
+        return
     tx = transaction.NewUTXOTransaction(From,To,amount,blk_chain)
     if tx == None:
         print("Error: not enough funds")
@@ -22,6 +25,9 @@ def cli_sending(From, To, amount):
 
 def cli_check_balance(name):
     blk_chain = BlockChain()
+    if not blk_chain.Verify_Block_Chain():
+        print("Your database may be damaged. Cannot open this file.")
+        return
     amount = blk_chain.FindBalance(name)
     print("Name: {n}\nAmount: {a}".format(n = name,a = amount))
 
@@ -31,10 +37,16 @@ def cli_create_bc(name):
 
 def cli_printblock(height):
     blk_chain = BlockChain()
+    if not blk_chain.Verify_Block_Chain():
+        print("Your database may be damaged. Cannot open this file.")
+        return
     print(blk_chain.get_block(height-1))
 
 def cli_print_block_chain():
     blk_chain = BlockChain()
+    if not blk_chain.Verify_Block_Chain():
+        print("Your database may be damaged. Cannot open this database.")
+        return
     print(blk_chain)
     for i in range(blk_chain.get_length()):
         print(blk_chain.get_block(i))

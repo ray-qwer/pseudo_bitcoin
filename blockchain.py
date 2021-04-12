@@ -14,6 +14,7 @@ class BlockChain:
         else:
             self._blocks = []
             # self._blocks.append(block.NewGenesisBlock())
+
             
     def add_block(self, transactions):
         # transactions : type:string
@@ -85,6 +86,21 @@ class BlockChain:
                 # print(acc)
                 acc += value[0]
         return acc
+    
+    def Verify_Block_Chain(self):
+        for i in range(len(self._blocks)):
+            if i == 0:
+                if self._blocks[i].verifyHash():
+                    continue
+                else:
+                    return False
+            else:
+                if self._blocks[i].verifyHash() and self._blocks[i-1].Hash == self._blocks[i].PrevBlockHash:
+                    continue
+                else:
+                    return False
+        return True
+
 # def cli_addBlock(transaction):
 #     blk_chain = BlockChain()
 #     blk_chain.add_block(transaction)

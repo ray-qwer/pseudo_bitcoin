@@ -18,6 +18,13 @@ class block:
         proof_of_block = pow.PoW(self)
         nonce,hashHex = proof_of_block.Run()
         self.Nonce, self.Hash = nonce, my_encode(hashHex)
+    def verifyHash(self):
+        proof_of_block = pow.PoW(self)
+        nonce,hashHex = proof_of_block.Run()
+        if (nonce != self.Nonce or my_encode(hashHex) != self.Hash):
+            return False
+        else:
+            return True
         # print(proof_of_block.Validate())
     def __str__(self):
         return ("block:\nheight: {height}\ntime: {time}\nBits: {Bits}\nNonce: {Nonce}\nhash: {hash}\nprevious block hash: {prev_hash}\ntransaction: {transaction}\n"\
