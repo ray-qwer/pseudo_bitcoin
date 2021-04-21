@@ -13,7 +13,12 @@ class TXInput:
         self.Txid = data        # from which transaction
         self.pubKey = publicKey      # pubkey
     def __str__(self):
-        return "TXIn\nFrom: {f}\namount: {out}\n".format(f = self._scriptSig, out = self.vout)
+        sign = ""
+        if self._scriptSig == None:
+            sign = "None"
+        else:
+            sign = bytes.decode(binascii.hexlify(self._scriptSig))
+        return "\nTXIn\nSignature: {f}\nTxid: {txid}\n".format(f = sign, txid = bytes.decode(self.Txid))
 
 class TXOutput:
     def __init__(self,scriptPubKey,value):

@@ -18,6 +18,10 @@ class Wallet:
         ripemd160 = hashlib.new('ripemd160')
         ripemd160.update(hashlib.sha256(binascii.unhexlify(self._publicKey)).digest())
         return ripemd160.hexdigest()
+    def __str__(self):
+        return "Name: {name}\nPublicKey: {pubkey}\nPrivateKey: {priKey}\nAddr: {addr}".format(name = self.Name,pubkey = self._publicKey,
+            priKey = self._privateKey,addr = self._address)
+ 
     
 
 # ecdsa usage
